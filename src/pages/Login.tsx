@@ -20,10 +20,12 @@ const Login = () => {
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false);
-      // For demo purposes, redirect to admin if email contains "admin"
+      // For demo purposes, set user type and redirect
       if (email.includes('admin')) {
+        localStorage.setItem('userType', 'admin');
         navigate('/admin');
       } else {
+        localStorage.setItem('userType', 'user');
         navigate('/');
       }
     }, 1000);

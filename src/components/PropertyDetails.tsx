@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import { Property } from '@/types/property';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Bed, 
   Bath, 
@@ -23,9 +25,9 @@ import {
   Car,
   Flame,
   Wifi,
-  Dumbbell
+  Dumbbell,
+  Star
 } from 'lucide-react';
-import { useState } from 'react';
 
 interface PropertyDetailsProps {
   property: Property;
@@ -33,8 +35,11 @@ interface PropertyDetailsProps {
 }
 
 const PropertyDetails = ({ property, onBack }: PropertyDetailsProps) => {
+  const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+  const [isRated, setIsRated] = useState(false);
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
@@ -88,13 +93,31 @@ const PropertyDetails = ({ property, onBack }: PropertyDetailsProps) => {
             </Button>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({
+                    title: "Link Copied",
+                    description: "Property link copied to clipboard",
+                  });
+                }}
+              >
                 <Share2 className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon"
-                onClick={() => setIsLiked(!isLiked)}
+                onClick={() => {
+                  setIsLiked(!isLiked);
+                  toast({
+                    title: isLiked ? "Removed from Bookmarks" : "Added to Bookmarks",
+                    description: isLiked 
+                      ? "Property removed from your saved list" 
+                      : "Property saved to your bookmarks",
+                  });
+                }}
                 className={isLiked ? 'text-red-500' : 'text-slate-600'}
               >
                 <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
@@ -225,6 +248,45 @@ const PropertyDetails = ({ property, onBack }: PropertyDetailsProps) => {
                       <span>{feature}</span>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Rating Section */}
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 mb-4">Rate This Property</h2>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => {
+                          setUserRating(star);
+                          setIsRated(true);
+                          toast({
+                            title: "Rating Submitted",
+                            description: `You rated this property ${star} star${star !== 1 ? 's' : ''}`,
+                          });
+                        }}
+                        className={`p-1 transition-colors ${
+                          star <= userRating 
+                            ? 'text-yellow-500' 
+                            : 'text-gray-300 hover:text-yellow-400'
+                        }`}
+                      >
+                        <Star className={`h-6 w-6 ${star <= userRating ? 'fill-current' : ''}`} />
+                      </button>
+                    ))}
+                  </div>
+                  {isRated && (
+                    <span className="text-sm text-slate-600">
+                      Thank you for your rating!
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2 text-sm text-slate-500">
+                  Help others by rating this property (1-5 stars)
                 </div>
               </CardContent>
             </Card>
