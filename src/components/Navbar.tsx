@@ -57,10 +57,17 @@ const Navbar = () => {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <Button variant="ghost" className="text-slate-700 hover:text-slate-900">
+            <Button 
+              variant="ghost" 
+              className="text-slate-700 hover:text-slate-900"
+              onClick={() => window.location.href = '/login'}
+            >
               Log in
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => window.location.href = '/signup'}
+            >
               Sign up
             </Button>
           </div>
@@ -91,10 +98,17 @@ const Navbar = () => {
                   
                   {/* Mobile Auth */}
                   <div className="flex flex-col space-y-2 pt-4 border-t">
-                    <Button variant="ghost" className="justify-start">
+                    <Button 
+                      variant="ghost" 
+                      className="justify-start"
+                      onClick={() => window.location.href = '/login'}
+                    >
                       Log in
                     </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white justify-start">
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white justify-start"
+                      onClick={() => window.location.href = '/signup'}
+                    >
                       Sign up
                     </Button>
                   </div>
